@@ -1,0 +1,24 @@
+[theme]
+# Primary color - Vibrant Coral (matches your gradient buttons)
+primaryColor = "#FF6B6B"
+
+# Background color - Warm gradient-inspired peachy cream
+backgroundColor = "#FFEEE6"
+
+# Secondary background color - Soft coral-tinted white (for cards)
+secondaryBackgroundColor = "#FFF8F3"
+
+# Text color - Rich dark navy for strong contrast
+textColor = "#2D3142"
+
+# Font family - Inter for modern look
+font = "sans serif"
+
+[server]
+# Enable CORS for development
+enableCORS = false
+enableXsrfProtection = true
+
+[browser]
+# Gather usage stats
+gatherUsageStats = false

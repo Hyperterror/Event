@@ -338,6 +338,72 @@ class DatabaseHelper:
             print(f"Error: {e}")
             return []
 
+    # ==================== SCHEDULE OPERATIONS ====================
+
+    def add_schedule(self, event_id, title, description, schedule_date, schedule_time, location, added_by_user_id):
+        """Add a schedule item to an event"""
+        try:
+            query = """
+            INSERT INTO Event_Schedule (event_id, title, description, schedule_date, schedule_time, location, added_by_user_id)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """
+            values = (event_id, title, description, schedule_date, schedule_time, location, added_by_user_id)
+            
+            self.mycursor.execute(query, values)
+            self.mydb.commit()
+            
+            return {"success": True, "schedule_id": self.mycursor.lastrowid}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def get_event_schedules(self, event_id):
+        """Get all schedule items for an event, ordered by date and time"""
+        try:
+            query = """
+            SELECT 
+                es.*,
+                u.first_name,
+                u.last_name,
+                CONCAT(u.first_name, ' ', u.last_name) as added_by,
+                CONCAT(es.schedule_date, ' ', es.schedule_time) as datetime
+            FROM Event_Schedule es
+            LEFT JOIN Users u ON es.added_by_user_id = u.user_id
+            WHERE es.event_id = %s
+            ORDER BY es.schedule_date ASC, es.schedule_time ASC
+            """
+            self.mycursor.execute(query, (event_id,))
+            return self.mycursor.fetchall()
+        except Exception as e:
+            print(f"Error fetching schedules: {e}")
+            return []
+
+    def delete_schedule(self, schedule_id):
+        """Delete a schedule item"""
+        try:
+            query = "DELETE FROM Event_Schedule WHERE schedule_id = %s"
+            self.mycursor.execute(query, (schedule_id,))
+            self.mydb.commit()
+            return {"success": True}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+    def update_schedule(self, schedule_id, title, description, schedule_date, schedule_time, location):
+        """Update a schedule item"""
+        try:
+            query = """
+            UPDATE Event_Schedule 
+            SET title = %s, description = %s, schedule_date = %s, schedule_time = %s, location = %s
+            WHERE schedule_id = %s
+            """
+            values = (title, description, schedule_date, schedule_time, location, schedule_id)
+            
+            self.mycursor.execute(query, values)
+            self.mydb.commit()
+            
+            return {"success": True}
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
     # ==================== ORGANISER OPERATIONS ====================
 
     def create_organiser(self, organiser_name, phone_number, email, post, user_id):

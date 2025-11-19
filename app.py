@@ -21,34 +21,499 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for better UI
-def load_custom_css():
+# Design System - CSS Custom Properties and Component Styles
+def load_design_system():
+    """Load the complete design system with CSS custom properties"""
     st.markdown("""
     <style>
     /* Import Google Fonts */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
-    /* Global font styling */
-    html, body, [class*="css"] {
-        font-family: 'Inter', sans-serif;
+    /* ===== CSS CUSTOM PROPERTIES (DESIGN TOKENS) ===== */
+    :root {
+      /* Primary Brand Colors (Warm Coral-Orange-Yellow Spectrum) */
+      --color-coral: #FF6B6B;
+      --color-orange: #FFB84D;
+      --color-yellow: #FFE66D;
+      --color-teal: #4ECDC4;
+      --color-mint: #95E1D3;
+      --color-salmon: #FFA07A;
+      
+      /* Neutral Colors */
+      --color-gray-900: #2D3142;
+      --color-gray-700: #5A6175;
+      --color-gray-500: #8B92A8;
+      --color-gray-300: #E8EAED;
+      --color-gray-100: #FAFBFC;
+      --color-white: #FFFFFF;
+      
+      /* Gradients */
+      --gradient-header: linear-gradient(135deg, #FF8C69 0%, #FFB84D 50%, #FFE66D 100%);
+      --gradient-button: linear-gradient(135deg, #FF6B6B 0%, #FFB84D 100%);
+      --gradient-card-a: linear-gradient(135deg, #FF9A76 0%, #FFAD87 100%);
+      --gradient-card-b: linear-gradient(135deg, #FFB84D 0%, #FFCF5C 100%);
+      --gradient-card-c: linear-gradient(135deg, #FFE66D 0%, #FFF09E 100%);
+      
+      /* Spacing Scale (4px baseline grid) */
+      --space-xs: 4px;
+      --space-sm: 8px;
+      --space-md: 12px;
+      --space-lg: 16px;
+      --space-xl: 24px;
+      --space-2xl: 32px;
+      --space-3xl: 48px;
+      --space-4xl: 64px;
+      
+      /* Typography */
+      --font-family: 'Inter', 'Segoe UI', -apple-system, system-ui, sans-serif;
+      
+      /* Shadows */
+      --shadow-xs: 0 1px 2px rgba(45, 49, 66, 0.04);
+      --shadow-sm: 0 2px 8px rgba(45, 49, 66, 0.06);
+      --shadow-md: 0 4px 16px rgba(45, 49, 66, 0.08);
+      --shadow-lg: 0 8px 24px rgba(45, 49, 66, 0.12);
+      --shadow-xl: 0 16px 48px rgba(45, 49, 66, 0.16);
+      
+      /* Border Radius */
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-2xl: 24px;
+      --radius-full: 9999px;
+      
+      /* Transitions */
+      --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+      --duration-fast: 200ms;
+      --duration-normal: 300ms;
     }
     
-    /* Main container styling */
+    /* ===== GLOBAL STYLES ===== */
+    html, body, [class*="css"] {
+        font-family: var(--font-family);
+        background-color: var(--color-gray-100);
+    }
+    
     .main {
         padding: 2rem;
+        background-color: var(--color-gray-100);
     }
     
-    /* Event Card with Hover Effect */
+    .stApp {
+        background-color: var(--color-gray-100);
+    }
+    
+    /* ===== TYPOGRAPHY ===== */
+    h1 {
+        font-size: 32px;
+        line-height: 40px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+        color: var(--color-gray-900);
+        margin: 0;
+        font-family: var(--font-family);
+    }
+    
+    h2 {
+        font-size: 24px;
+        line-height: 32px;
+        font-weight: 600;
+        letter-spacing: -0.3px;
+        color: var(--color-gray-900);
+        margin: 0;
+        font-family: var(--font-family);
+    }
+    
+    h3 {
+        font-size: 20px;
+        line-height: 28px;
+        font-weight: 600;
+        letter-spacing: -0.2px;
+        color: var(--color-gray-900);
+        margin: 0;
+        font-family: var(--font-family);
+    }
+    
+    h4 {
+        font-size: 16px;
+        line-height: 24px;
+        font-weight: 600;
+        color: var(--color-gray-900);
+        margin: 0;
+        font-family: var(--font-family);
+    }
+    
+    p {
+        font-size: 14px;
+        line-height: 22px;
+        font-weight: 400;
+        color: var(--color-gray-700);
+    }
+    
+    a {
+        color: var(--color-coral);
+        text-decoration: none;
+        transition: color var(--duration-fast) ease;
+    }
+    
+    a:hover {
+        color: #FF5252;
+        text-decoration: underline;
+    }
+    
+    /* ===== BUTTON COMPONENTS ===== */
+    /* Primary Button (Default) */
+    .stButton>button {
+        background: var(--gradient-button);
+        color: var(--color-white);
+        padding: 12px 24px;
+        border-radius: var(--radius-md);
+        font-size: 14px;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+        transition: all var(--duration-normal) var(--ease-standard);
+        font-family: var(--font-family);
+    }
+    
+    .stButton>button:hover {
+        filter: brightness(1.1);
+        box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        transform: translateY(-1px);
+    }
+    
+    .stButton>button:active {
+        transform: scale(0.98);
+    }
+    
+    .stButton>button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        box-shadow: none;
+    }
+    
+    /* Secondary Button */
+    .stButton.secondary>button {
+        background: var(--color-white);
+        color: var(--color-gray-900);
+        border: 2px solid var(--color-gray-300);
+        box-shadow: none;
+    }
+    
+    .stButton.secondary>button:hover {
+        background: rgba(255, 184, 77, 0.1);
+        border-color: var(--color-orange);
+        filter: none;
+        box-shadow: none;
+    }
+    
+    /* Icon Button */
+    .stButton.icon>button {
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--color-white);
+        color: var(--color-gray-900);
+        border: 1px solid var(--color-gray-300);
+        box-shadow: none;
+    }
+    
+    .stButton.icon>button:hover {
+        background: rgba(255, 184, 77, 0.1);
+        border-color: var(--color-orange);
+        filter: none;
+    }
+    
+    /* ===== ROLE BADGE COMPONENTS ===== */
+    .role-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: var(--radius-full);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: var(--color-white);
+        letter-spacing: 0.3px;
+    }
+    
+    .admin-badge {
+        background: var(--color-coral);
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+    }
+    
+    .core-badge {
+        background: var(--color-orange);
+        box-shadow: 0 2px 8px rgba(255, 184, 77, 0.3);
+    }
+    
+    .participant-badge {
+        background: var(--color-teal);
+        box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+    }
+    
+    /* ===== STATUS BADGE COMPONENTS ===== */
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: var(--radius-full);
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+    
+    .status-badge--ongoing {
+        background: rgba(78, 205, 196, 0.15);
+        color: #2D7873;
+        border: 1px solid rgba(78, 205, 196, 0.3);
+    }
+    
+    .status-badge--upcoming {
+        background: rgba(255, 160, 122, 0.15);
+        color: #B8563D;
+        border: 1px solid rgba(255, 160, 122, 0.3);
+    }
+    
+    .status-badge--completed {
+        background: rgba(255, 107, 107, 0.15);
+        color: #B84A4A;
+        border: 1px solid rgba(255, 107, 107, 0.3);
+    }
+    
+    /* ===== INPUT FIELD COMPONENTS ===== */
+    .stTextInput>div>div>input, .stTextArea>div>div>textarea {
+        height: 44px;
+        padding: 12px 16px;
+        border: 2px solid var(--color-gray-300);
+        border-radius: var(--radius-md);
+        background: var(--color-white);
+        font-size: 14px;
+        color: var(--color-gray-900);
+        transition: all var(--duration-fast) ease;
+        font-family: var(--font-family);
+    }
+    
+    .stTextArea>div>div>textarea {
+        min-height: 120px;
+        height: auto;
+        resize: vertical;
+    }
+    
+    .stTextInput>div>div>input::placeholder,
+    .stTextArea>div>div>textarea::placeholder {
+        color: var(--color-gray-500);
+    }
+    
+    .stTextInput>div>div>input:focus,
+    .stTextArea>div>div>textarea:focus {
+        outline: none;
+        border-color: var(--color-coral);
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+    }
+    
+    .stTextInput>div>div>input:disabled,
+    .stTextArea>div>div>textarea:disabled {
+        background: var(--color-gray-100);
+        color: var(--color-gray-500);
+        cursor: not-allowed;
+    }
+    
+    /* Select Dropdown */
+    .stSelectbox>div>div>select {
+        height: 44px;
+        padding: 12px 16px;
+        border: 2px solid var(--color-gray-300);
+        border-radius: var(--radius-md);
+        background: var(--color-white);
+        font-size: 14px;
+        color: var(--color-gray-900);
+        cursor: pointer;
+        transition: all var(--duration-fast) ease;
+        font-family: var(--font-family);
+    }
+    
+    .stSelectbox>div>div>select:focus {
+        outline: none;
+        border-color: var(--color-coral);
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15);
+    }
+    
+    /* ===== MESSAGE BUBBLE COMPONENTS ===== */
+    .message-bubble {
+        padding: 12px 16px;
+        border-radius: 16px;
+        max-width: 70%;
+        margin: 8px 0;
+        font-size: 14px;
+        line-height: 22px;
+    }
+    
+    .message-bubble--sent {
+        background: var(--gradient-button);
+        color: var(--color-white);
+        border-radius: 16px 16px 4px 16px;
+        align-self: flex-end;
+        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.2);
+        margin-left: 30%;
+    }
+    
+    .message-bubble--received {
+        background: var(--color-white);
+        color: var(--color-gray-900);
+        border: 1px solid var(--color-gray-300);
+        border-radius: 16px 16px 16px 4px;
+        align-self: flex-start;
+        box-shadow: 0 1px 4px rgba(45, 49, 66, 0.04);
+        margin-right: 30%;
+    }
+    
+    .message-bubble__time {
+        font-size: 11px;
+        margin-top: 4px;
+        opacity: 0.8;
+    }
+    
+    /* ===== HEADER COMPONENT ===== */
+    .app-header {
+        background: var(--gradient-header);
+        padding: var(--space-2xl) var(--space-3xl);
+        border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);
+        box-shadow: 0 4px 16px rgba(255, 107, 107, 0.15);
+        margin-bottom: var(--space-2xl);
+    }
+    
+    .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .header-left {
+        display: flex;
+        align-items: center;
+        gap: var(--space-lg);
+    }
+    
+    .header-icon {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: var(--radius-lg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+    
+    .header-title {
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--color-white);
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        margin: 0;
+    }
+    
+    .header-right {
+        text-align: right;
+    }
+    
+    .header-greeting {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--color-white);
+        margin-bottom: 4px;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .header-email {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    @media (max-width: 640px) {
+        .app-header {
+            padding: var(--space-xl) 20px;
+        }
+        
+        .header-content {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: var(--space-lg);
+        }
+        
+        .header-title {
+            font-size: 28px;
+        }
+        
+        .header-right {
+            text-align: left;
+        }
+    }
+    
+    /* ===== ANNOUNCEMENT COMPONENT ===== */
+    .announcement-box {
+        background: var(--color-white);
+        border-left: 4px solid var(--color-orange);
+        border-radius: var(--radius-md);
+        padding: 20px;
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 16px;
+    }
+    
+    .announcement-box__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 12px;
+    }
+    
+    .announcement-box__body {
+        font-size: 14px;
+        line-height: 22px;
+        color: var(--color-gray-900);
+        margin-bottom: 12px;
+    }
+    
+    /* ===== SCHEDULE ITEM COMPONENT ===== */
+    .schedule-item {
+        background: var(--color-white);
+        border-left: 5px solid var(--color-orange);
+        border-radius: var(--radius-lg);
+        padding: 1.5rem;
+        margin: 1rem 0;
+        box-shadow: var(--shadow-sm);
+        transition: all var(--duration-normal) ease;
+    }
+    
+    .schedule-item:hover {
+        transform: translateX(5px);
+        box-shadow: 0 5px 20px rgba(255, 184, 77, 0.15);
+    }
+    
+    .schedule-item__title {
+        font-size: 20px;
+        font-weight: 600;
+        color: var(--color-orange);
+        margin: 0 0 8px 0;
+    }
+    
+    /* ===== EVENT CARD COMPONENT ===== */
     .event-card {
-        background: white;
-        padding: 2rem;
-        border-radius: 20px;
-        margin: 1.5rem 0;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-        border: 1px solid #e8e8e8;
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--color-white);
+        border-radius: var(--radius-xl);
+        padding: var(--space-xl);
+        box-shadow: var(--shadow-sm);
+        transition: all var(--duration-normal) var(--ease-standard);
         position: relative;
         overflow: hidden;
+        margin: var(--space-xl) 0;
     }
     
     .event-card::before {
@@ -57,261 +522,127 @@ def load_custom_css():
         top: 0;
         left: 0;
         right: 0;
-        height: 5px;
-        background: linear-gradient(90deg, #FF6B6B 0%, #FFE66D 100%);
-        transition: height 0.4s ease;
+        height: 8px;
+        transition: height var(--duration-normal) ease;
     }
     
     .event-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-        border-color: #FF6B6B;
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
     }
     
-    .event-card:hover::before {
-        height: 8px;
+    .event-card--ongoing::before {
+        background: linear-gradient(90deg, #4ECDC4, #95E1D3);
     }
     
-    .ongoing-card::before {
-        background: linear-gradient(90deg, #06D6A0 0%, #118AB2 100%);
+    .event-card--upcoming::before {
+        background: linear-gradient(90deg, #FFA07A, #FFCDB3);
     }
     
-    .upcoming-card::before {
-        background: linear-gradient(90deg, #F72585 0%, #B5179E 100%);
+    .event-card--completed::before {
+        background: linear-gradient(90deg, #FF6B6B, #FFB3B3);
     }
     
-    .completed-card::before {
-        background: linear-gradient(90deg, #4CC9F0 0%, #4361EE 100%);
-    }
-    
-    /* Button styling */
-    .stButton>button {
-        border-radius: 12px;
-        font-weight: 600;
-        font-size: 1rem;
-        padding: 0.6rem 1.5rem;
-        transition: all 0.3s ease;
-        border: none;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    .stButton>button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    /* Custom button classes */
-    .create-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
-        color: white !important;
-    }
-    
-    .join-btn {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) !important;
-        color: white !important;
-    }
-    
-    /* Tab styling */
+    /* ===== TAB STYLING ===== */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 10px;
-        background: transparent;
+        gap: 4px;
+        background: var(--color-white);
+        border-bottom: 2px solid var(--color-gray-300);
+        padding: 0 24px;
     }
     
     .stTabs [data-baseweb="tab"] {
-        border-radius: 12px 12px 0 0;
-        padding: 12px 24px;
-        font-weight: 600;
-        font-size: 1rem;
-        background: #f8f9fa;
-        border: none;
-        font-family: 'Inter', sans-serif;
+        padding: 16px 20px;
+        font-size: 14px;
+        font-weight: 500;
+        color: var(--color-gray-700);
+        border-bottom: 3px solid transparent;
+        cursor: pointer;
+        transition: all var(--duration-fast) ease;
+        position: relative;
+        bottom: -2px;
+        background: transparent;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        font-family: var(--font-family);
     }
     
     .stTabs [data-baseweb="tab"]:hover {
-        background: #e9ecef;
+        color: var(--color-gray-900);
+        background: rgba(255, 184, 77, 0.05);
     }
     
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white !important;
+        color: var(--color-coral);
+        border-bottom-color: var(--color-coral);
+        font-weight: 600;
     }
     
-    /* Message bubble styling */
-    .message-bubble {
-        background: #f8f9fa;
-        padding: 1rem;
-        border-radius: 18px;
-        margin: 0.8rem 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        font-size: 0.95rem;
-        line-height: 1.6;
-    }
-    
-    .my-message {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        margin-left: 20%;
-    }
-    
-    /* Role badge styling */
-    .role-badge {
-        display: inline-block;
-        padding: 0.4rem 1rem;
-        border-radius: 25px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        margin: 0.2rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .admin-badge {
-        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%);
-        color: white;
-        box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
-    }
-    
-    .core-badge {
-        background: linear-gradient(135deg, #4ECDC4 0%, #44A08D 100%);
-        color: white;
-        box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
-    }
-    
-    .participant-badge {
-        background: linear-gradient(135deg, #A8E6CF 0%, #7BC8A4 100%);
-        color: #2c3e50;
-        box-shadow: 0 2px 8px rgba(168, 230, 207, 0.3);
-    }
-    
-    /* Announcement styling */
-    .announcement-box {
-        background: linear-gradient(135deg, #FFF9E6 0%, #FFF3CD 100%);
-        border-left: 5px solid #FFB800;
-        padding: 1.5rem;
-        border-radius: 12px;
-        margin: 1.2rem 0;
-        box-shadow: 0 3px 10px rgba(255, 184, 0, 0.1);
-        font-size: 1rem;
-        line-height: 1.7;
-    }
-    
-    /* Schedule item styling */
-    .schedule-item {
-        background: linear-gradient(135deg, #FFFFFF 0%, #F8F9FA 100%);
-        border-left: 5px solid #667eea;
-        padding: 1.5rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-    }
-    
-    .schedule-item:hover {
-        transform: translateX(5px);
-        box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
-    }
-    
-    /* Metric styling */
+    /* ===== METRIC STYLING ===== */
     [data-testid="stMetricValue"] {
         font-size: 2rem;
         font-weight: 800;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-family);
+        color: var(--color-gray-900);
     }
     
     [data-testid="stMetricLabel"] {
         font-size: 0.9rem;
         font-weight: 600;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-family);
+        color: var(--color-gray-700);
     }
     
-    /* Header styling */
-    h1 {
-        color: #1a1a1a;
-        font-weight: 800;
-        font-size: 2.5rem;
-        font-family: 'Inter', sans-serif;
-        letter-spacing: -0.5px;
-    }
-    
-    h2 {
-        color: #2c3e50;
-        font-weight: 700;
-        font-size: 1.8rem;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    h3 {
-        color: #34495e;
-        font-weight: 600;
-        font-size: 1.4rem;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    /* Paragraph styling */
-    p {
-        font-size: 1rem;
-        line-height: 1.7;
-        color: #4a5568;
-    }
-    
-    /* Input field styling */
-    .stTextInput>div>div>input, .stTextArea>div>div>textarea {
-        border-radius: 12px;
-        border: 2px solid #e2e8f0;
-        font-size: 1rem;
-        font-family: 'Inter', sans-serif;
-        padding: 0.75rem;
-        transition: all 0.3s ease;
-    }
-    
-    .stTextInput>div>div>input:focus, .stTextArea>div>div>textarea:focus {
-        border-color: #667eea;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-    
-    /* Success/Error message styling */
+    /* ===== ALERT/MESSAGE STYLING ===== */
     .stSuccess, .stError, .stInfo, .stWarning {
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
         padding: 1.2rem;
         font-size: 1rem;
         font-weight: 500;
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-family);
     }
     
-    /* User header card */
-    .user-header-card {
-        background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%);
-        padding: 1.5rem;
-        border-radius: 18px;
-        box-shadow: 0 8px 25px rgba(255, 107, 107, 0.25);
-        color: white;
-    }
-    
-    /* Action buttons container */
-    .action-buttons {
-        display: flex;
-        gap: 1rem;
-        margin: 1.5rem 0;
-    }
-    
-    /* Custom scrollbar */
+    /* ===== CUSTOM SCROLLBAR ===== */
     ::-webkit-scrollbar {
         width: 10px;
         height: 10px;
     }
     
     ::-webkit-scrollbar-track {
-        background: #f1f1f1;
+        background: var(--color-gray-100);
         border-radius: 10px;
     }
     
     ::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: var(--gradient-button);
         border-radius: 10px;
     }
     
     ::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        background: linear-gradient(135deg, #FFB84D 0%, #FF6B6B 100%);
+    }
+    
+    /* ===== RESPONSIVE DESIGN ===== */
+    @media (max-width: 640px) {
+        h1 { font-size: 28px; line-height: 36px; }
+        h2 { font-size: 22px; line-height: 30px; }
+        .stButton>button { padding: 10px 20px; font-size: 13px; }
+        .main { padding: 1rem; }
+    }
+    
+    /* ===== REDUCED MOTION SUPPORT ===== */
+    @media (prefers-reduced-motion: reduce) {
+        * {
+            animation-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+    
+    /* ===== FOCUS INDICATORS (ACCESSIBILITY) ===== */
+    :focus-visible {
+        outline: 2px solid var(--color-coral);
+        outline-offset: 2px;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -325,14 +656,55 @@ def get_role_badge(role):
     }
     return f'<span class="role-badge {role_classes.get(role.lower(), "participant-badge")}">{role.upper()}</span>'
 
+def get_status_badge(status):
+    """Return HTML for status badge with icon"""
+    status_config = {
+        "ongoing": {
+            "class": "status-badge--ongoing",
+            "icon": "🟢",
+            "text": "LIVE"
+        },
+        "upcoming": {
+            "class": "status-badge--upcoming",
+            "icon": "🟡",
+            "text": "UPCOMING"
+        },
+        "completed": {
+            "class": "status-badge--completed",
+            "icon": "🔴",
+            "text": "COMPLETED"
+        }
+    }
+    
+    config = status_config.get(status.lower(), status_config["upcoming"])
+    return f'<span class="status-badge {config["class"]}">{config["icon"]} {config["text"]}</span>'
+
+def render_header(user_name, user_email):
+    """Render the application header with gradient background"""
+    header_html = f"""
+    <div class="app-header">
+      <div class="header-content">
+        <div class="header-left">
+          <div class="header-icon">🎯</div>
+          <h1 class="header-title">Event Dashboard</h1>
+        </div>
+        <div class="header-right">
+          <div class="header-greeting">Welcome back, {user_name}! 👋</div>
+          <div class="header-email">📧 {user_email}</div>
+        </div>
+      </div>
+    </div>
+    """
+    st.markdown(header_html, unsafe_allow_html=True)
+
 def check_permission(event_id, user_role, required_roles):
     """Check if user has permission based on role"""
     return user_role.lower() in [r.lower() for r in required_roles]
 
 def login_signup_page():
-    load_custom_css()
+    load_design_system()
     
-    # Custom CSS for login/register forms - Dark theme with transparent inputs
+    # Custom CSS for login/register forms - Warm light theme
     st.markdown("""
     <style>
     /* Remove extra borders and clean up input fields */
@@ -343,41 +715,42 @@ def login_signup_page():
     }
     
     .stTextInput > div > div > input {
-        background: transparent !important;
-        border: 2px solid rgba(255, 255, 255, 0.2) !important;
+        background: #FFFFFF !important;
+        border: 2px solid #FFB84D !important;
         border-radius: 12px !important;
         padding: 0.9rem 1rem !important;
         font-size: 1rem !important;
         font-family: 'Inter', sans-serif !important;
         transition: all 0.3s ease !important;
-        color: #e2e8f0 !important;
+        color: #2D3142 !important;
     }
     
     .stTextInput > div > div > input:focus {
-        border-color: #667eea !important;
-        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2) !important;
-        background: rgba(102, 126, 234, 0.05) !important;
+        border-color: #FF6B6B !important;
+        box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.15) !important;
+        background: #FFFFFF !important;
     }
     
     .stTextInput > div > div > input::placeholder {
-        color: rgba(255, 255, 255, 0.4) !important;
+        color: #8B92A8 !important;
     }
     
     /* Label styling */
     .stTextInput > label {
         font-weight: 600 !important;
-        color: #e2e8f0 !important;
+        color: #2D3142 !important;
         font-size: 0.95rem !important;
         margin-bottom: 0.5rem !important;
         font-family: 'Inter', sans-serif !important;
     }
     
-    /* Form container - transparent with subtle border */
+    /* Form container - white with warm shadow */
     [data-testid="stForm"] {
-        background: transparent;
+        background: #FFFFFF;
         padding: 2rem;
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 2px solid #FFE6D9;
+        box-shadow: 0 4px 16px rgba(255, 107, 107, 0.1);
     }
     
     /* Login/Register page specific */
@@ -387,7 +760,7 @@ def login_signup_page():
     
     /* Submit button in forms */
     [data-testid="stForm"] button[kind="primary"] {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+        background: linear-gradient(135deg, #FF6B6B 0%, #FFB84D 100%) !important;
         color: white !important;
         border: none !important;
         border-radius: 12px !important;
@@ -395,12 +768,13 @@ def login_signup_page():
         font-weight: 700 !important;
         font-size: 1.1rem !important;
         transition: all 0.3s ease !important;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
+        box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3) !important;
     }
     
     [data-testid="stForm"] button[kind="primary"]:hover {
         transform: translateY(-2px) !important;
-        box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4) !important;
+        box-shadow: 0 6px 25px rgba(255, 107, 107, 0.4) !important;
+        filter: brightness(1.05) !important;
     }
     
     /* Page title */
@@ -412,7 +786,7 @@ def login_signup_page():
     .login-title h1 {
         font-size: 2.5rem;
         font-weight: 800;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #FF6B6B 0%, #FFB84D 50%, #FFE66D 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         background-clip: text;
@@ -420,23 +794,24 @@ def login_signup_page():
     }
     
     .login-subtitle {
-        color: rgba(255, 255, 255, 0.7);
+        color: #5A6175;
         font-size: 1.1rem;
         text-align: center;
+        font-weight: 500;
     }
     
-    /* Tab styling for dark theme */
+    /* Tab styling for warm theme */
     .stTabs [data-baseweb="tab"] {
-        color: rgba(255, 255, 255, 0.7) !important;
+        color: #5A6175 !important;
     }
     
     .stTabs [aria-selected="true"] {
-        color: white !important;
+        color: #FF6B6B !important;
     }
     
     /* Subheader styling */
     h3 {
-        color: #e2e8f0 !important;
+        color: #1A1D2E !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -455,7 +830,7 @@ def login_signup_page():
         tab1, tab2 = st.tabs(["🔐 Login", "📝 Register"])
         
         with tab1:
-            st.markdown("<h3 style='color: #2d3748; font-weight: 600; margin-bottom: 1.5rem;'>Welcome Back! 👋</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color: #1A1D2E; font-weight: 600; margin-bottom: 1.5rem;'>Welcome Back! 👋</h3>", unsafe_allow_html=True)
             
             with st.form("login_form"):
                 email = st.text_input("Email Address", placeholder="your.email@example.com", label_visibility="visible")
@@ -488,7 +863,7 @@ def login_signup_page():
                         st.error("⚠️ Please enter both email and password!")
         
         with tab2:
-            st.markdown("<h3 style='color: #2d3748; font-weight: 600; margin-bottom: 1.5rem;'>Create Your Account ✨</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='color: #1A1D2E; font-weight: 600; margin-bottom: 1.5rem;'>Create Your Account ✨</h3>", unsafe_allow_html=True)
             
             with st.form("signup_form"):
                 name = st.text_input("Full Name", placeholder="John Doe", label_visibility="visible")
@@ -604,7 +979,7 @@ def join_event_modal():
 
 def create_event_page():
     """Create a new event"""
-    load_custom_css()
+    load_design_system()
     
     col1, col2 = st.columns([1, 4])
     with col1:
@@ -613,7 +988,7 @@ def create_event_page():
             st.rerun()
     
     st.title("➕ Create New Event")
-    st.markdown("<p style='color: #7f8c8d;'>Fill in the details to create your event</p>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #5A6175;'>Fill in the details to create your event</p>", unsafe_allow_html=True)
     
     st.divider()
     
@@ -717,7 +1092,7 @@ def create_event_page():
 
 def events_page():
     """Main events page with filtering"""
-    load_custom_css()
+    load_design_system()
     
     # Action buttons with custom styling
     st.markdown("""
@@ -809,10 +1184,10 @@ def events_page():
     # Display events
     if not events:
         st.markdown("""
-        <div style="text-align: center; padding: 3rem; background: #f8f9fa; border-radius: 15px; margin: 2rem 0;">
-            <h2 style="color: #718096;">📭 No Events Available</h2>
-            <p style="color: #a0aec0; font-size: 1.1rem;">There are no events to display at the moment.</p>
-            <p style="color: #a0aec0;">Create a new event or join an existing one using an event code!</p>
+        <div style="text-align: center; padding: 3rem; background: #FFF8F3; border-radius: 15px; margin: 2rem 0; border: 2px solid #FFE6D9;">
+            <h2 style="color: #5A6175;">📭 No Events Available</h2>
+            <p style="color: #8B92A8; font-size: 1.1rem;">There are no events to display at the moment.</p>
+            <p style="color: #8B92A8;">Create a new event or join an existing one using an event code!</p>
         </div>
         """, unsafe_allow_html=True)
         return
@@ -820,15 +1195,6 @@ def events_page():
     # Display event cards
     for event in events:
         event_id = event["event_id"]
-        
-        # Determine gradient based on status
-        gradient_map = {
-            "ongoing": "linear-gradient(90deg, #06D6A0 0%, #118AB2 100%)",
-            "upcoming": "linear-gradient(90deg, #F72585 0%, #B5179E 100%)",
-            "completed": "linear-gradient(90deg, #4CC9F0 0%, #4361EE 100%)"
-        }
-        
-        status_gradient = gradient_map.get(event["event_status"], "linear-gradient(90deg, #FF6B6B 0%, #FFE66D 100%)")
         
         # Check if user is part of this event
         is_member = db.check_user_joined_event(st.session_state.user_id, event_id)
@@ -841,57 +1207,59 @@ def events_page():
             if role_result:
                 user_role = role_result[0].get("user_role", "participant")
         
-        # Status badge with color
-        status_emoji = {
-            "ongoing": "🟢 LIVE",
-            "upcoming": "🟡 UPCOMING", 
-            "completed": "🔴 COMPLETED"
-        }
-        
         # Get counts from database
         announcements_count = len(db.get_event_announcements(event_id))
         subevents_count = len(db.get_event_subevents(event_id))
         messages_count = len(db.get_event_chat(event_id, limit=1000))
         
-        # Create event card using Streamlit components instead of HTML
+        # Determine status class for accent bar
+        status_class = f"event-card--{event['event_status']}"
+        
+        # Create event card with proper HTML structure and CSS classes
+        st.markdown(f'<div class="event-card {status_class}">', unsafe_allow_html=True)
+        
         with st.container():
-            # Status badge
-            col_title, col_status = st.columns([3, 1])
-            with col_title:
-                st.subheader(f"🎯 {event['title']}")
+            # Event card header with title and badges
+            col_header1, col_header2 = st.columns([3, 1])
+            with col_header1:
+                st.markdown(f"### 🎯 {event['title']}")
                 if is_member:
                     st.markdown(get_role_badge(user_role), unsafe_allow_html=True)
-            with col_status:
-                st.markdown(f"**{status_emoji.get(event['event_status'], '🟡 UPCOMING')}**")
+            with col_header2:
+                st.markdown(get_status_badge(event['event_status']), unsafe_allow_html=True)
             
-            st.write(f"📝 {event['event_description']}")
-            st.write(f"📅 **{event['start_date']}** to **{event['end_date']}**")
-            st.write(f"🎫 Event Code: `{event['event_code']}`")
+            # Event details
+            st.markdown(f"**Description:** {event['event_description']}")
+            st.markdown(f"📅 **{event['start_date']}** to **{event['end_date']}**")
+            st.markdown(f"🎫 Event Code: `{event['event_code']}`")
+            
+            st.divider()
+            
+            # Stats and action button
+            col1, col2, col3, col4, col5 = st.columns([1.5, 1.5, 1.5, 1.5, 1])
+            
+            with col1:
+                st.metric("📢 Announcements", announcements_count)
+            with col2:
+                st.metric("🎪 Subevents", subevents_count)
+            with col3:
+                st.metric("📅 Schedule", 0)  # Will implement schedule later
+            with col4:
+                st.metric("💬 Messages", messages_count)
+            with col5:
+                st.write("")
+                if is_member:
+                    if st.button("📖 Open", key=f"view_{event_id}", use_container_width=True):
+                        st.session_state.current_event = event_id
+                        st.session_state.current_page = "event_details"
+                        st.rerun()
+                else:
+                    if st.button("🎫 Join", key=f"join_{event_id}", use_container_width=True):
+                        st.session_state.show_join_modal = True
+                        st.rerun()
         
-        # Stats and action button
-        col1, col2, col3, col4, col5 = st.columns([1.5, 1.5, 1.5, 1.5, 1])
-        
-        with col1:
-            st.metric("📢 Announcements", announcements_count)
-        with col2:
-            st.metric("🎪 Subevents", subevents_count)
-        with col3:
-            st.metric("📅 Schedule", 0)  # Will implement schedule later
-        with col4:
-            st.metric("💬 Messages", messages_count)
-        with col5:
-            st.write("")
-            if is_member:
-                if st.button("📖 Open", key=f"view_{event_id}", use_container_width=True):
-                    st.session_state.current_event = event_id
-                    st.session_state.current_page = "event_details"
-                    st.rerun()
-            else:
-                if st.button("🎫 Join", key=f"join_{event_id}", use_container_width=True):
-                    st.session_state.show_join_modal = True
-                    st.rerun()
-        
-        st.markdown("<div style='margin: 2rem 0;'></div>", unsafe_allow_html=True)
+        st.markdown('</div>', unsafe_allow_html=True)
+        st.markdown("<div style='margin: 1.5rem 0;'></div>", unsafe_allow_html=True)
 
 def event_details_page():
     """Detailed event view with multiple sections"""
@@ -932,6 +1300,18 @@ def event_details_page():
     role_query = "SELECT user_role FROM joins WHERE user_id = %s AND event_id = %s"
     role_result = db.fetch_query(role_query, (st.session_state.user_id, event_id))
     user_role = role_result[0].get("user_role", "participant") if role_result else "participant"
+    
+    # Fetch related data
+    announcements = db.get_event_announcements(event_id)
+    
+    # Get schedules (with fallback for cached instances)
+    try:
+        schedules = db.get_event_schedules(event_id)
+    except AttributeError:
+        st.warning("⚠️ Schedule feature requires app restart. Please refresh the page or clear cache (press 'C' then 'Clear cache').")
+        schedules = []
+    
+    subevents = db.get_event_subevents(event_id
     
     # Display user role
     st.markdown(f"**Your Role:** {get_role_badge(user_role)}", unsafe_allow_html=True)
@@ -1005,7 +1385,7 @@ def event_details_page():
                             <div>
                                 <strong>👤 {announcement['author_username']}</strong>
                             </div>
-                            <small style="color: #7f8c8d;">🕒 {timestamp}</small>
+                            <small style="color: #8B92A8;">🕒 {timestamp}</small>
                         </div>
                         <p style="margin-top: 0.8rem; font-size: 1.05rem;">{announcement['announcement_text']}</p>
                     </div>
@@ -1015,19 +1395,13 @@ def event_details_page():
                         st.info(f"📎 Attachment: **{announcement['file_name']}**")
                     
                     st.write("")
-                    
-                    if announcement.get("has_file"):
-                        st.info(f"📎 Attachment: **{announcement.get('filename', 'File')}**")
-                    
-                    if idx < len(event["announcements"]) - 1:
-                        st.write("")
     
     # Schedule Tab
     with tab2:
         st.header("📅 Event Schedule")
         
         # Add schedule item - Only Admin and Core can add
-        if check_permission(event, ["admin", "core"]):
+        if check_permission(event_id, user_role, ["admin", "core"]):
             with st.expander("➕ Add Schedule Item", expanded=False):
                 with st.form("add_schedule"):
                     col1, col2 = st.columns(2)
@@ -1045,46 +1419,47 @@ def event_details_page():
                         submitted = st.form_submit_button("➕ Add", use_container_width=True)
                     
                     if submitted and schedule_title:
-                        new_schedule = {
-                            "id": str(uuid.uuid4()),
-                            "datetime": f"{schedule_date} {schedule_time}",
-                            "title": schedule_title,
-                            "description": schedule_desc,
-                            "location": schedule_location,
-                            "added_by": st.session_state.user_name
-                        }
+                        result = db.add_schedule(
+                            event_id=event_id,
+                            title=schedule_title,
+                            description=schedule_desc,
+                            schedule_date=schedule_date,
+                            schedule_time=schedule_time,
+                            location=schedule_location,
+                            added_by_user_id=st.session_state.user_id
+                        )
                         
-                        event["schedules"].append(new_schedule)
-                        # Sort schedules by datetime
-                        event["schedules"].sort(key=lambda x: x["datetime"])
-                        st.success("✅ Schedule item added!")
-                        time.sleep(0.5)
-                        st.rerun()
+                        if result["success"]:
+                            st.success("✅ Schedule item added!")
+                            time.sleep(0.5)
+                            st.rerun()
+                        else:
+                            st.error(f"❌ Error adding schedule: {result['error']}")
         else:
             st.info("ℹ️ Only Admin and Core members can add schedule items.")
         
         st.divider()
         
         # Display schedule
-        if not event["schedules"]:
+        if not schedules:
             st.info("📭 No schedule items yet.")
         else:
-            for idx, schedule in enumerate(event["schedules"]):
+            for idx, schedule in enumerate(schedules):
                 st.markdown(f"""
                 <div class="schedule-item">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3 style="margin: 0; color: #667eea;">📌 {schedule['title']}</h3>
-                        <span style="background: #667eea; color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">
+                        <h3 style="margin: 0; color: #FFB84D;">📌 {schedule['title']}</h3>
+                        <span style="background: linear-gradient(135deg, #FF6B6B 0%, #FFB84D 100%); color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.9rem;">
                             🕐 {schedule['datetime']}
                         </span>
                     </div>
-                    <p style="margin-top: 0.8rem; color: #2c3e50;">{schedule['description']}</p>
+                    <p style="margin-top: 0.8rem; color: #2D3142;">{schedule['description']}</p>
                     {f'<p style="margin-top: 0.5rem;"><strong>📍 Location:</strong> {schedule.get("location", "TBA")}</p>' if schedule.get("location") else ''}
-                    <small style="color: #7f8c8d;">Added by: {schedule['added_by']}</small>
+                    <small style="color: #8B92A8;">Added by: {schedule['added_by']}</small>
                 </div>
                 """, unsafe_allow_html=True)
                 
-                if idx < len(event["schedules"]) - 1:
+                if idx < len(schedules) - 1:
                     st.write("")
     
     # Subevents Tab
@@ -1207,20 +1582,20 @@ def event_details_page():
                                 col_space, col_msg = st.columns([1, 4])
                                 with col_msg:
                                     st.markdown(f"""
-                                    <div class="message-bubble my-message">
+                                    <div class="message-bubble message-bubble--sent">
                                         <strong>You</strong><br>
                                         {message['chat_message_text']}<br>
-                                        <small style="opacity: 0.8;">{timestamp}</small>
+                                        <div class="message-bubble__time">{timestamp}</div>
                                     </div>
                                     """, unsafe_allow_html=True)
                             else:
                                 col_msg, col_space = st.columns([4, 1])
                                 with col_msg:
                                     st.markdown(f"""
-                                    <div class="message-bubble">
+                                    <div class="message-bubble message-bubble--received">
                                         <strong>{message['sender_username']}</strong><br>
                                         {message['chat_message_text']}<br>
-                                        <small style="color: #7f8c8d;">{timestamp}</small>
+                                        <div class="message-bubble__time">{timestamp}</div>
                                     </div>
                                     """, unsafe_allow_html=True)
     
@@ -1271,20 +1646,20 @@ def event_details_page():
                     col_space, col_msg = st.columns([1, 4])
                     with col_msg:
                         st.markdown(f"""
-                        <div class="message-bubble my-message">
+                        <div class="message-bubble message-bubble--sent">
                             <strong>You</strong><br>
                             {message['chat_message_text']}<br>
-                            <small style="opacity: 0.8;">{timestamp}</small>
+                            <div class="message-bubble__time">{timestamp}</div>
                         </div>
                         """, unsafe_allow_html=True)
                 else:
                     col_msg, col_space = st.columns([4, 1])
                     with col_msg:
                         st.markdown(f"""
-                        <div class="message-bubble">
+                        <div class="message-bubble message-bubble--received">
                             <strong>{message['sender_username']}</strong><br>
                             {message['chat_message_text']}<br>
-                            <small style="color: #7f8c8d;">{timestamp}</small>
+                            <div class="message-bubble__time">{timestamp}</div>
                         </div>
                         """, unsafe_allow_html=True)
     
@@ -1318,8 +1693,8 @@ def event_details_page():
         # Event Description
         st.subheader("📝 Description")
         st.markdown(f"""
-        <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #667eea;">
-            <p style="font-size: 1.05rem; line-height: 1.6; color: #2c3e50;">{event['event_description']}</p>
+        <div style="background: #FFF8F3; padding: 1.5rem; border-radius: 10px; border-left: 4px solid #FFB84D;">
+            <p style="font-size: 1.05rem; line-height: 1.6; color: #2D3142;">{event['event_description']}</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -1353,26 +1728,10 @@ def main():
     if not st.session_state.logged_in:
         login_signup_page()
     else:
-        load_custom_css()
+        load_design_system()
         
         # Header with user info and logout
-        st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #FF6B6B 0%, #FFE66D 100%); 
-                    padding: 2rem; 
-                    border-radius: 20px; 
-                    margin-bottom: 2rem; 
-                    box-shadow: 0 10px 30px rgba(255, 107, 107, 0.25);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1 style="margin: 0; color: white; font-size: 2.5rem; font-weight: 800;">🎯 Event Dashboard</h1>
-                    <p style="margin: 0.5rem 0 0 0; color: rgba(255, 255, 255, 0.95); font-size: 1.1rem;">
-                        Welcome back, <strong>{st.session_state.user_name}</strong>! 👋
-                    </p>
-                    <small style="color: rgba(255, 255, 255, 0.9); font-size: 0.95rem;">📧 {st.session_state.user_email}</small>
-                </div>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        render_header(st.session_state.user_name, st.session_state.user_email)
         
         header_col1, header_col2, header_col3, header_col4 = st.columns([2, 1, 1, 1])
         

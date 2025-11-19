@@ -1329,11 +1329,12 @@ def event_details_page():
     st.divider()
     
     # Tabs for different sections
-    tab1, tab2, tab3, tab4, tab5 = st.tabs([
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
         "📢 Announcements", 
         "📅 Schedule", 
         "🎪 Subevents", 
         "💬 Event Chat",
+        "👥 Participants",
         "ℹ️ General Info"
     ])
     
@@ -1341,8 +1342,8 @@ def event_details_page():
     with tab1:
         st.header("📢 Announcements")
         
-        # Add announcement - Only Admin and Core can post
-        if check_permission(event_id, user_role, ["admin", "core"]):
+        # Add announcement - Only Admin can post
+        if check_permission(event_id, user_role, ["admin"]):
             with st.expander("➕ Post New Announcement", expanded=False):
                 with st.form("add_announcement"):
                     announcement_text = st.text_area("Announcement Message", placeholder="Share important updates with all participants...")
@@ -1375,7 +1376,7 @@ def event_details_page():
                         else:
                             st.error(f"❌ {result['error']}")
         else:
-            st.info("ℹ️ Only Admin and Core members can post announcements.")
+            st.info("ℹ️ Only Admin can post announcements.")
         
         st.divider()
         
@@ -1526,9 +1527,9 @@ def event_details_page():
                 subevent_id = subevent["sub_event_id"]
                 subevent_name = subevent["sub_event_name"]
                 
-                # Check if user is registered (simplified - using session for now)
-                # In production, create Subevent_Participants table
-                is_registered = False  # Placeholder
+                # Check if user is registered for this subevent
+                is_registered = db.check_subevent_registration(st.session_state.user_id, subevent_id)
+                participants_count = db.get_subevent_participants_count(subevent_id)
                 
                 with st.expander(f"🎪 {subevent_name}", expanded=False):
                     col_sub1, col_sub2 = st.columns([3, 1])
@@ -1540,75 +1541,109 @@ def event_details_page():
                             timestamp = created_at.strftime('%Y-%m-%d') if hasattr(created_at, 'strftime') else str(created_at)[:10]
                             st.caption(f"Created on: {timestamp}")
                         
-                        # Show capacity info if available
-                        if subevent.get("capacity"):
-                            st.write(f"👥 Capacity: {subevent['capacity']} participants")
+                        # Show capacity and participant info
+                        capacity = subevent.get("capacity")
+                        if capacity:
+                            st.write(f"👥 Participants: {participants_count}/{capacity}")
+                            if participants_count >= capacity:
+                                st.warning("⚠️ This subevent is full")
+                        else:
+                            st.write(f"👥 Participants: {participants_count}")
                     
                     with col_sub2:
                         st.write("")
-                        st.info("Join feature coming soon")
+                        # Join/Leave button
+                        if is_registered:
+                            if st.button("🚪 Leave", key=f"leave_{subevent_id}", use_container_width=True):
+                                result = db.leave_subevent(st.session_state.user_id, subevent_id)
+                                if result["success"]:
+                                    st.success("✅ Left subevent")
+                                    time.sleep(0.5)
+                                    st.rerun()
+                                else:
+                                    st.error(f"❌ {result['error']}")
+                        else:
+                            # Check capacity before allowing join
+                            can_join = True
+                            if capacity and participants_count >= capacity:
+                                can_join = False
+                            
+                            if can_join:
+                                if st.button("✅ Join", key=f"join_{subevent_id}", use_container_width=True):
+                                    result = db.join_subevent(st.session_state.user_id, subevent_id)
+                                    if result["success"]:
+                                        st.success("✅ Joined subevent!")
+                                        time.sleep(0.5)
+                                        st.rerun()
+                                    else:
+                                        st.error(f"❌ {result['error']}")
+                            else:
+                                st.button("❌ Full", key=f"full_{subevent_id}", disabled=True, use_container_width=True)
                     
                     st.divider()
                     
-                    # Subevent chat
+                    # Subevent chat - Only for registered participants
                     st.subheader("💬 Subevent Chat")
                     
-                    # Chat input
-                    with st.form(f"chat_form_{subevent_id}"):
-                        col_chat1, col_chat2 = st.columns([5, 1])
-                        with col_chat1:
-                            message_text = st.text_input(
-                                "Message", 
-                                key=f"msg_input_{subevent_id}",
-                                placeholder="Type your message...",
-                                label_visibility="collapsed"
-                            )
-                        with col_chat2:
-                            send_btn = st.form_submit_button("📤 Send", use_container_width=True)
-                        
-                        if send_btn and message_text:
-                            # Send message to database
-                            result = db.send_message(
-                                event_id=event_id,
-                                sender_username=st.session_state.user_email,
-                                chat_message_text=message_text,
-                                subevent_name=subevent_name,
-                                idx_subevent_chat=1
-                            )
-                            
-                            if result["success"]:
-                                st.rerun()
-                    
-                    # Display messages from database
-                    messages = db.get_subevent_chat(event_id, subevent_name, limit=10)
-                    
-                    if not messages:
-                        st.info("No messages yet. Start the conversation!")
+                    if not is_registered:
+                        st.info("ℹ️ Join this subevent to access the chat")
                     else:
-                        for message in messages:
-                            is_my_message = message["sender_username"] == st.session_state.user_email
-                            timestamp = message['created_at'].strftime('%H:%M') if hasattr(message['created_at'], 'strftime') else str(message['created_at'])[11:16]
+                        # Chat input
+                        with st.form(f"chat_form_{subevent_id}"):
+                            col_chat1, col_chat2 = st.columns([5, 1])
+                            with col_chat1:
+                                message_text = st.text_input(
+                                    "Message", 
+                                    key=f"msg_input_{subevent_id}",
+                                    placeholder="Type your message...",
+                                    label_visibility="collapsed"
+                                )
+                            with col_chat2:
+                                send_btn = st.form_submit_button("📤 Send", use_container_width=True)
                             
-                            if is_my_message:
-                                col_space, col_msg = st.columns([1, 4])
-                                with col_msg:
-                                    st.markdown(f"""
-                                    <div class="message-bubble message-bubble--sent">
-                                        <strong>You</strong><br>
-                                        {message['chat_message_text']}<br>
-                                        <div class="message-bubble__time">{timestamp}</div>
-                                    </div>
-                                    """, unsafe_allow_html=True)
-                            else:
-                                col_msg, col_space = st.columns([4, 1])
-                                with col_msg:
-                                    st.markdown(f"""
-                                    <div class="message-bubble message-bubble--received">
-                                        <strong>{message['sender_username']}</strong><br>
-                                        {message['chat_message_text']}<br>
-                                        <div class="message-bubble__time">{timestamp}</div>
-                                    </div>
-                                    """, unsafe_allow_html=True)
+                            if send_btn and message_text:
+                                # Send message to database
+                                result = db.send_message(
+                                    event_id=event_id,
+                                    sender_username=st.session_state.user_email,
+                                    chat_message_text=message_text,
+                                    subevent_name=subevent_name,
+                                    idx_subevent_chat=1
+                                )
+                                
+                                if result["success"]:
+                                    st.rerun()
+                        
+                        # Display messages from database
+                        messages = db.get_subevent_chat(event_id, subevent_name, limit=10)
+                        
+                        if not messages:
+                            st.info("No messages yet. Start the conversation!")
+                        else:
+                            for message in messages:
+                                is_my_message = message["sender_username"] == st.session_state.user_email
+                                timestamp = message['created_at'].strftime('%H:%M') if hasattr(message['created_at'], 'strftime') else str(message['created_at'])[11:16]
+                                
+                                if is_my_message:
+                                    col_space, col_msg = st.columns([1, 4])
+                                    with col_msg:
+                                        st.markdown(f"""
+                                        <div class="message-bubble message-bubble--sent">
+                                            <strong>You</strong><br>
+                                            {message['chat_message_text']}<br>
+                                            <div class="message-bubble__time">{timestamp}</div>
+                                        </div>
+                                        """, unsafe_allow_html=True)
+                                else:
+                                    col_msg, col_space = st.columns([4, 1])
+                                    with col_msg:
+                                        st.markdown(f"""
+                                        <div class="message-bubble message-bubble--received">
+                                            <strong>{message['sender_username']}</strong><br>
+                                            {message['chat_message_text']}<br>
+                                            <div class="message-bubble__time">{timestamp}</div>
+                                        </div>
+                                        """, unsafe_allow_html=True)
     
     # Event Chat Tab
     with tab4:
@@ -1674,8 +1709,86 @@ def event_details_page():
                         </div>
                         """, unsafe_allow_html=True)
     
-    # General Info Tab
+    # Participants Tab
     with tab5:
+        st.header("👥 Event Participants")
+        st.caption("All members of this event organized by role")
+        
+        # Get all participants
+        participants = db.get_event_participants(event_id)
+        
+        if not participants:
+            st.info("📭 No participants yet.")
+        else:
+            # Group participants by role
+            admins = [p for p in participants if p['user_role'] == 'admin']
+            cores = [p for p in participants if p['user_role'] == 'core']
+            regular_participants = [p for p in participants if p['user_role'] == 'participant']
+            
+            # Display summary metrics
+            col_metric1, col_metric2, col_metric3, col_metric4 = st.columns(4)
+            with col_metric1:
+                st.metric("Total Members", len(participants))
+            with col_metric2:
+                st.metric("Admins", len(admins))
+            with col_metric3:
+                st.metric("Core Team", len(cores))
+            with col_metric4:
+                st.metric("Participants", len(regular_participants))
+            
+            st.divider()
+            
+            # Display Admins
+            if admins:
+                st.subheader("🔴 Admins")
+                for admin in admins:
+                    col_info, col_badge = st.columns([4, 1])
+                    with col_info:
+                        st.markdown(f"""
+                        <div style="background: #FFF8F3; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; border-left: 4px solid #FF6B6B;">
+                            <strong style="font-size: 1.1rem;">{admin['first_name']} {admin['last_name']}</strong><br>
+                            <span style="color: #5A6175;">📧 {admin['username']}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    with col_badge:
+                        st.markdown(get_role_badge('admin'), unsafe_allow_html=True)
+                
+                st.divider()
+            
+            # Display Core Team
+            if cores:
+                st.subheader("🟠 Core Team")
+                for core in cores:
+                    col_info, col_badge = st.columns([4, 1])
+                    with col_info:
+                        st.markdown(f"""
+                        <div style="background: #FFF8F3; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; border-left: 4px solid #FFB84D;">
+                            <strong style="font-size: 1.1rem;">{core['first_name']} {core['last_name']}</strong><br>
+                            <span style="color: #5A6175;">📧 {core['username']}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    with col_badge:
+                        st.markdown(get_role_badge('core'), unsafe_allow_html=True)
+                
+                st.divider()
+            
+            # Display Participants
+            if regular_participants:
+                st.subheader("🟢 Participants")
+                for participant in regular_participants:
+                    col_info, col_badge = st.columns([4, 1])
+                    with col_info:
+                        st.markdown(f"""
+                        <div style="background: #FFF8F3; padding: 1rem; border-radius: 8px; margin-bottom: 0.5rem; border-left: 4px solid #4ECDC4;">
+                            <strong style="font-size: 1.1rem;">{participant['first_name']} {participant['last_name']}</strong><br>
+                            <span style="color: #5A6175;">📧 {participant['username']}</span>
+                        </div>
+                        """, unsafe_allow_html=True)
+                    with col_badge:
+                        st.markdown(get_role_badge('participant'), unsafe_allow_html=True)
+    
+    # General Info Tab
+    with tab6:
         st.header("ℹ️ General Information")
         
         # Note: General info editing would require adding a field to Eventz table

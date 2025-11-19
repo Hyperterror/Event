@@ -649,12 +649,18 @@ def load_design_system():
 
 def get_role_badge(role):
     """Return HTML for role badge"""
+    # Normalize role (handle legacy 'organiser' as 'admin')
+    role_lower = role.lower()
+    if role_lower == "organiser":
+        role_lower = "admin"
+        role = "admin"
+    
     role_classes = {
         "admin": "admin-badge",
         "core": "core-badge",
         "participant": "participant-badge"
     }
-    return f'<span class="role-badge {role_classes.get(role.lower(), "participant-badge")}">{role.upper()}</span>'
+    return f'<span class="role-badge {role_classes.get(role_lower, "participant-badge")}">{role.upper()}</span>'
 
 def get_status_badge(status):
     """Return HTML for status badge with icon"""
@@ -699,7 +705,12 @@ def render_header(user_name, user_email):
 
 def check_permission(event_id, user_role, required_roles):
     """Check if user has permission based on role"""
-    return user_role.lower() in [r.lower() for r in required_roles]
+    # Normalize role (handle legacy 'organiser' as 'admin')
+    role_lower = user_role.lower()
+    if role_lower == "organiser":
+        role_lower = "admin"
+    
+    return role_lower in [r.lower() for r in required_roles]
 
 def login_signup_page():
     load_design_system()
@@ -1311,7 +1322,7 @@ def event_details_page():
         st.warning("⚠️ Schedule feature requires app restart. Please refresh the page or clear cache (press 'C' then 'Clear cache').")
         schedules = []
     
-    subevents = db.get_event_subevents(event_id
+    subevents = db.get_event_subevents(event_id)    
     
     # Display user role
     st.markdown(f"**Your Role:** {get_role_badge(user_role)}", unsafe_allow_html=True)
